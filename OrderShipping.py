@@ -55,13 +55,22 @@ for x in iter:
             for i in data2:
                 Id = i.find('Id').text
                 Name = i.find('Name').text
+                Address1 = i.find('Address1').text
+                Address2 = i.find('Address2').text
+                City = i.find('City').text
+                Zip = i.find('Zip').text
+                StateName = i.find('StateName').text
+                CountryName = i.find('CountryName').text
+                IsResidential = i.find('IsResidential').text
 
                 # sql query to insert data into database
-                data = """INSERT INTO OrderShippingProfileInfo(Id,Name)
-                VALUES(%s,%s)"""
+                data = """INSERT INTO OrderShippingProfileInfo(Id,Name,Address1,Address2,
+                City,Zip,StateName,CountryName,IsResidential)
+                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
 
                 # executing cursor object
-                cursor.execute(data, (Id,Name))
+                cursor.execute(data, (Id,Name,Address1,Address2,
+                City,Zip,StateName,CountryName,IsResidential))
                 conn.commit()
                 print("OrderShippingProfileInfo No-", Id, " stored successfully")
             conn.commit()
