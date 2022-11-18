@@ -13,7 +13,6 @@ API_KEY = os.getenv('API_KEY')
 URL_ORDER_LIST = os.getenv('URL_ORDER_LIST')
 
 
-
 parametro = {
     'key': API_KEY,
     'LimitStartDate': '2022-10-01T00:00:00',
