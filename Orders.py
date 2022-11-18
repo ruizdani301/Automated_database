@@ -1,18 +1,25 @@
 import requests
 import xmltodict
 import json
+import os
 # import xml element tree - para cargar xml a mysql
 import xml.etree.ElementTree as ET
 # import mysql connector - conexión a la DB
 import mysql.connector
+from dotenv import load_dotenv
+
+load_dotenv()
+API_KEY = os.getenv('API_KEY')
+URL_ORDER_LIST = os.getenv('URL_ORDER_LIST')
+
 
 
 parametro = {
-    'key': '21E09DD1C4484DEEA325DA7D554CC588',
+    'key': API_KEY,
     'LimitStartDate': '2022-10-01T00:00:00',
     'LimitEndDate': '2022-10-31T00:00:00'
 }
-resp = requests.get('https://www.mcssl.com/API/461142/Orders/LIST',
+resp = requests.get(URL_ORDER_LIST,
                     params=parametro)
 obj = resp.content
 
@@ -25,7 +32,7 @@ iter = dictionary['Response']['Orders']['Order']
 # print(iter)
 
 # Vamos a entrar al diccionario para hacer un reqest por cada link en el for
-parametro2 = {'key': '21E09DD1C4484DEEA325DA7D554CC588'}
+parametro2 = {'key': API_KEY}
 for x in iter:
     #     # Agregar metodos de error o try catch
     # Realizo un Request por cada linea de iter donde la URL esta en la clave: @xlink:href
