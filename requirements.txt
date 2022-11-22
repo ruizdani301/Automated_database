@@ -1,0 +1,4 @@
+xmltodict
+requests
+mysql-connector-python
+load_dotenv
