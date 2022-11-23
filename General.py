@@ -4,17 +4,25 @@ import os
 import xml.etree.ElementTree as ET
 import mysql.connector
 from dotenv import load_dotenv
+from datetime import date
+from datetime import timedelta
 
 load_dotenv()
 API_KEY = os.getenv('API_KEY')
 URL_ORDER_LIST = os.getenv('URL_ORDER_LIST')
 URL_RECURRING = os.getenv('URL_RECURRING')
 
+today = date.today() 
+yesterday = today - timedelta(days = 1)
+LimitStartDate = str(yesterday) + ' 00:00:00.000000'
+
+# Para consultar fechas especificas agregar a parametros el rango de fechas:
+# 'LimitStartDate': '2022-10-01T00:00:00',
+# 'LimitEndDate': '2022-10-02T00:00:00'
 
 parametro = {
     'key': API_KEY,
-    'LimitStartDate': '2022-10-01T00:00:00',
-    'LimitEndDate': '2022-10-02T00:00:00'
+    'LimitStartDate': LimitStartDate,
 }
 resp = requests.get(URL_ORDER_LIST,
                     params=parametro)
@@ -65,38 +73,25 @@ for x in iter:
             # i value for xml data #j value printing number of
             # values that are stored
             for i in orders:
-                Id = i.find('Id').text
-                ClientId = i.find('ClientId').text
-                RecurringOrderId = i.find('RecurringOrderId').text
-                Comments = i.find('Comments').text
-                GrandTotal = i.find('GrandTotal').text
-                OrderPaymentType = i.find('OrderPaymentType').text
-                OrderChargeStatusType = i.find('OrderChargeStatusType').text
-                OrderStatusType = i.find('OrderChargeStatusType').text
-                PendingReasonType = i.find('PendingReasonType').text
-                IsArchived = i.find('IsArchived').text
-                OrderDate = i.find('OrderDate').text
-                ModifiedAt = i.find('ModifiedAt').text
-                OrderBundles = i.find('OrderBundles').text
-                Discounts = i.find('Discounts').text
-                ShippingTrackingMethods = i.find('ShippingTrackingMethods').text
-                ShippingTaxes = i.find('ShippingTaxes').text
-                OrderedAt = i.find('OrderedAt').text
-                BillingCyclesCharged = i.find('BillingCyclesCharged').text
-                CustomFields = i.find('CustomFields').text
-
-                # sql query to insert data into database
-                orders_data = """INSERT INTO Orders_1(Id,ClientId,RecurringOrderId,Comments,GrandTotal,OrderPaymentType,
-                OrderChargeStatusType,OrderStatusType,PendingReasonType,IsArchived,OrderDate,ModifiedAt,OrderBundles,
-                Discounts,ShippingTrackingMethods,ShippingTaxes,OrderedAt,BillingCyclesCharged,CustomFields)
-                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
-
-                # executing cursor object
-                cursor.execute(orders_data, (Id,ClientId,RecurringOrderId,Comments,GrandTotal,OrderPaymentType,
-                OrderChargeStatusType,OrderStatusType,PendingReasonType,IsArchived,OrderDate,ModifiedAt,OrderBundles,
-                Discounts,ShippingTrackingMethods,ShippingTaxes,OrderedAt,BillingCyclesCharged,CustomFields))
-                conn.commit()
-                print("Orders No-", Id, " stored successfully")
+                orders_Id = i.find('Id').text
+                orders_ClientId = i.find('ClientId').text
+                orders_RecurringOrderId = i.find('RecurringOrderId').text
+                orders_Comments = i.find('Comments').text
+                orders_GrandTotal = i.find('GrandTotal').text
+                orders_OrderPaymentType = i.find('OrderPaymentType').text
+                orders_OrderChargeStatusType = i.find('OrderChargeStatusType').text
+                orders_OrderStatusType = i.find('OrderChargeStatusType').text
+                orders_PendingReasonType = i.find('PendingReasonType').text
+                orders_IsArchived = i.find('IsArchived').text
+                orders_OrderDate = i.find('OrderDate').text
+                orders_ModifiedAt = i.find('ModifiedAt').text
+                orders_OrderBundles = i.find('OrderBundles').text
+                orders_Discounts = i.find('Discounts').text
+                orders_ShippingTrackingMethods = i.find('ShippingTrackingMethods').text
+                orders_ShippingTaxes = i.find('ShippingTaxes').text
+                orders_OrderedAt = i.find('OrderedAt').text
+                orders_BillingCyclesCharged = i.find('BillingCyclesCharged').text
+                orders_CustomFields = i.find('CustomFields').text
 
         #Items
 
@@ -105,38 +100,22 @@ for x in iter:
             # i value for xml data #j value printing number of
             # values that are stored
             for i in items:
-                Id = i.find('Id').text
-                OrderId = i.find('OrderId').text
-                ProductId = i.find('ProductId').text
-                Quantity = i.find('Quantity').text
-                ProductName = i.find('ProductName').text
-                ProductType = i.find('ProductType').text
-                UnitPrice = i.find('UnitPrice').text
-                IsRecurring = i.find('IsRecurring').text
-                IsTaxable = i.find('IsTaxable').text
-                IsCommissionable = i.find('IsCommissionable').text
-                CreatedAt = i.find('CreatedAt').text
-                ModifiedAt = i.find('ModifiedAt').text
-                SelectedOptions = i.find('SelectedOptions').text
-                ProductTaxes = i.find('ProductTaxes').text
-                Discounts = i.find('Discounts').text
-                LineItemAttributeValues = i.find('LineItemAttributeValues').text
-
-
-                # sql query to insert data into database
-                items_data = """INSERT INTO ItemsInfo(Id,OrderId,ProductId,Quantity,ProductName,
-                ProductType,UnitPrice,IsRecurring,IsTaxable,IsCommissionable,CreatedAt,
-                ModifiedAt,SelectedOptions,ProductTaxes,Discounts,LineItemAttributeValues)
-                VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
-
-                # creating the cursor object
-
-                # executing cursor object
-                cursor.execute(items_data, (Id,OrderId,ProductId,Quantity,ProductName,
-                ProductType,UnitPrice,IsRecurring,IsTaxable,IsCommissionable,CreatedAt,
-                ModifiedAt,SelectedOptions,ProductTaxes,Discounts,LineItemAttributeValues))
-                conn.commit()
-                print("Item No-", Id, " stored successfully")
+                items_Id = i.find('Id').text
+                items_OrderId = i.find('OrderId').text
+                items_ProductId = i.find('ProductId').text
+                items_Quantity = i.find('Quantity').text
+                items_ProductName = i.find('ProductName').text
+                items_ProductType = i.find('ProductType').text
+                items_UnitPrice = i.find('UnitPrice').text
+                items_IsRecurring = i.find('IsRecurring').text
+                items_IsTaxable = i.find('IsTaxable').text
+                items_IsCommissionable = i.find('IsCommissionable').text
+                items_CreatedAt = i.find('CreatedAt').text
+                items_ModifiedAt = i.find('ModifiedAt').text
+                items_SelectedOptions = i.find('SelectedOptions').text
+                items_ProductTaxes = i.find('ProductTaxes').text
+                items_Discounts = i.find('Discounts').text
+                items_LineItemAttributeValues = i.find('LineItemAttributeValues').text
 
         # Clients
 
@@ -155,29 +134,19 @@ for x in iter:
                 clients5 = tree.findall('ClientInfo')
 
                 for i in clients5:
-                    Id = i.find('Id').text
-                    Email = i.find('Email').text
-                    FirstName = i.find('FirstName').text
-                    LastName = i.find('LastName').text
-                    Address1 = i.find('Address1').text
-                    Address2 = i.find('Address2').text
-                    City = i.find('City').text
-                    Zip = i.find('Zip').text
-                    StateName = i.find('StateName').text
-                    CountryName = i.find('CountryName').text
-                    Phone = i.find('Phone').text
-                    CreatedAt = i.find('CreatedAt').text
-                    IsValid = i.find('IsValid').text
-
-                    clients_data = """INSERT INTO ClientInfo(Id,Email,FirstName,LastName,Address1,
-                    Address2,City,Zip,StateName,CountryName,Phone,CreatedAt,IsValid)
-                    VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
-
-                    cursor.execute(clients_data, (Id,Email,FirstName,LastName,Address1,Address2,City,
-                                          Zip,StateName,CountryName,Phone,CreatedAt,IsValid))
-
-                    conn.commit()
-                    print("Client No-", Id, " stored successfully")
+                    clients_Id = i.find('Id').text
+                    clients_Email = i.find('Email').text
+                    clients_FirstName = i.find('FirstName').text
+                    clients_LastName = i.find('LastName').text
+                    clients_Address1 = i.find('Address1').text
+                    clients_Address2 = i.find('Address2').text
+                    clients_City = i.find('City').text
+                    clients_Zip = i.find('Zip').text
+                    clients_StateName = i.find('StateName').text
+                    clients_CountryName = i.find('CountryName').text
+                    clients_Phone = i.find('Phone').text
+                    clients_CreatedAt = i.find('CreatedAt').text
+                    clients_IsValid = i.find('IsValid').text
 
         # Products
 
@@ -195,38 +164,25 @@ for x in iter:
                 products5 = tree.findall('ProductInfo')
 
                 for i in products5:
-                    Id = i.find('Id').text
-                    ProductName = i.find('ProductName').text
-                    ProductPrice = i.find('ProductPrice').text
-                    ShortDescription = i.find('ShortDescription').text
-                    ProductBasedShippingCost = i.find('ProductBasedShippingCost').text
-                    HasShippingCalculation = i.find('HasShippingCalculation').text
-                    ProductWeight = i.find('ProductWeight').text
-                    IsCommissionable = i.find('IsCommissionable').text
-                    IsTaxable = i.find('IsTaxable').text
-                    IsFeaturedProduct = i.find('IsFeaturedProduct').text
-                    ProductType = i.find('ProductType').text
-                    IsAmemberProduct = i.find('IsAmemberProduct').text
-                    CommissionTier1 = i.find('CommissionTier1').text
-                    CommissionTier2 = i.find('CommissionTier2').text
-                    IsDiscountEnabled = i.find('IsDiscountEnabled').text
-                    IsValid = i.find('IsValid').text
-                    UseSalePrice = i.find('UseSalePrice').text
-                    SalePrice = i.find('SalePrice').text
-                    IsActive = i.find('IsActive').text
-
-
-                    products_data = """INSERT INTO ProductInfo(Id,ProductName,ProductPrice,ShortDescription,ProductBasedShippingCost,
-                    HasShippingCalculation,ProductWeight,IsCommissionable,IsTaxable,IsFeaturedProduct,ProductType,
-                    IsAmemberProduct,CommissionTier1,CommissionTier2,IsDiscountEnabled,IsValid,UseSalePrice,SalePrice,IsActive)
-                    VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
-
-                    cursor.execute(products_data, (Id,ProductName,ProductPrice,ShortDescription,ProductBasedShippingCost,
-                    HasShippingCalculation,ProductWeight,IsCommissionable,IsTaxable,IsFeaturedProduct,ProductType,
-                    IsAmemberProduct,CommissionTier1,CommissionTier2,IsDiscountEnabled,IsValid,UseSalePrice,SalePrice,IsActive))
-
-                    conn.commit()
-                    print("Product No-", Id, " stored successfully")
+                    products_Id = i.find('Id').text
+                    products_ProductName = i.find('ProductName').text
+                    products_ProductPrice = i.find('ProductPrice').text
+                    products_ShortDescription = i.find('ShortDescription').text
+                    products_ProductBasedShippingCost = i.find('ProductBasedShippingCost').text
+                    products_HasShippingCalculation = i.find('HasShippingCalculation').text
+                    products_ProductWeight = i.find('ProductWeight').text
+                    products_IsCommissionable = i.find('IsCommissionable').text
+                    products_IsTaxable = i.find('IsTaxable').text
+                    products_IsFeaturedProduct = i.find('IsFeaturedProduct').text
+                    products_ProductType = i.find('ProductType').text
+                    products_IsAmemberProduct = i.find('IsAmemberProduct').text
+                    products_CommissionTier1 = i.find('CommissionTier1').text
+                    products_CommissionTier2 = i.find('CommissionTier2').text
+                    products_IsDiscountEnabled = i.find('IsDiscountEnabled').text
+                    products_IsValid = i.find('IsValid').text
+                    products_UseSalePrice = i.find('UseSalePrice').text
+                    products_SalePrice = i.find('SalePrice').text
+                    products_IsActive = i.find('IsActive').text
 
         # Recurring Orders
             for y in dictionary2:
@@ -251,40 +207,65 @@ for x in iter:
                     # Order data.
                     recurring = tree.findall('RecurringOrderInfo')
                     for i in recurring:
-                        Id = i.find('Id').text
-                        MerchantId = i.find('MerchantId').text
-                        OrderId = i.find('OrderId').text
-                        ClientId = i.find('ClientId').text
-                        ProductId = i.find('ProductId').text
-                        RecurringPrice = i.find('RecurringPrice').text
-                        Quantity = i.find('Quantity').text
-                        CurrentRecurring = i.find('CurrentRecurring').text
-                        TotalRecurringCycles = i.find(
+                        recurring_Id = i.find('Id').text
+                        recurring_MerchantId = i.find('MerchantId').text
+                        recurring_OrderId = i.find('OrderId').text
+                        recurring_ClientId = i.find('ClientId').text
+                        recurring_ProductId = i.find('ProductId').text
+                        recurring_RecurringPrice = i.find('RecurringPrice').text
+                        recurring_Quantity = i.find('Quantity').text
+                        recurring_CurrentRecurring = i.find('CurrentRecurring').text
+                        recurring_TotalRecurringCycles = i.find(
                             'TotalRecurringCycles').text
-                        LastCharge = i.find('LastCharge').text
-                        NextCharge = i.find('NextCharge').text
-                        Status = i.find('Status').text
-                        Attempts = i.find('Attempts').text
-                        IsRetryable = i.find('IsRetryable').text
-                        IsValid = i.find('IsValid').text
-                        CreatedAt = i.find('CreatedAt').text
-                        DaysCycle = i.find('DaysCycle').text
-                        IsDateBased = i.find('IsDateBased').text
-                        MonthlyBillingDate = i.find('MonthlyBillingDate').text
+                        recurring_LastCharge = i.find('LastCharge').text
+                        recurring_NextCharge = i.find('NextCharge').text
+                        recurring_Status = i.find('Status').text
+                        recurring_Attempts = i.find('Attempts').text
+                        recurring_IsRetryable = i.find('IsRetryable').text
+                        recurring_IsValid = i.find('IsValid').text
+                        recurring_CreatedAt = i.find('CreatedAt').text
+                        recurring_DaysCycle = i.find('DaysCycle').text
+                        recurring_IsDateBased = i.find('IsDateBased').text
+                        recurring_MonthlyBillingDate = i.find('MonthlyBillingDate').text
 
-                        # sql query to insert data into database
-                        recurring_data = """INSERT INTO RecurringOrders(Id,MerchantId,OrderId,ClientId,ProductId,RecurringPrice,Quantity,
-                        CurrentRecurring,TotalRecurringCycles,LastCharge,NextCharge,Status,Attempts,IsRetryable,IsValid,
-                        CreatedAt,DaysCycle,IsDateBased,MonthlyBillingDate) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,
+                        General_data = """INSERT INTO GeneralTable(orders_Id,orders_ClientId,orders_RecurringOrderId,orders_Comments,orders_GrandTotal,orders_OrderPaymentType,
+                        orders_OrderChargeStatusType,orders_OrderStatusType,orders_PendingReasonType,orders_IsArchived,orders_OrderDate,orders_ModifiedAt,orders_OrderBundles,
+                        orders_Discounts,orders_ShippingTrackingMethods,orders_ShippingTaxes,orders_OrderedAt,orders_BillingCyclesCharged,orders_CustomFields,
+                        items_Id,items_OrderId,items_ProductId,items_Quantity,items_ProductName,
+                        items_ProductType,items_UnitPrice,items_IsRecurring,items_IsTaxable,items_IsCommissionable,items_CreatedAt,
+                        items_ModifiedAt,items_SelectedOptions,items_ProductTaxes,items_Discounts,items_LineItemAttributeValues,clients_Id,clients_Email,clients_FirstName,clients_LastName,
+                        clients_Address1,clients_Address2,clients_City,clients_Zip,clients_StateName,clients_CountryName,clients_Phone,clients_CreatedAt,clients_IsValid,
+                        products_Id,products_ProductName,products_ProductPrice,products_ShortDescription,products_ProductBasedShippingCost,
+                        products_HasShippingCalculation,products_ProductWeight,products_IsCommissionable,products_IsTaxable,products_IsFeaturedProduct,products_ProductType,
+                        products_IsAmemberProduct,products_CommissionTier1,products_CommissionTier2,products_IsDiscountEnabled,products_IsValid,products_UseSalePrice,products_SalePrice,products_IsActive,
+                        recurring_Id, recurring_MerchantId, recurring_OrderId, recurring_ClientId, recurring_ProductId, recurring_RecurringPrice, recurring_Quantity,
+                        recurring_CurrentRecurring, recurring_TotalRecurringCycles, recurring_LastCharge, recurring_NextCharge, recurring_Status, recurring_Attempts, recurring_IsRetryable, recurring_IsValid,
+                        recurring_CreatedAt, recurring_DaysCycle, recurring_IsDateBased, recurring_MonthlyBillingDate)
+                        VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,
+                        %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,
+                        %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,
                         %s,%s,%s,%s,%s,%s,%s)"""
 
-                        # executing cursor object
-                        cursor.execute(recurring_data, (Id, MerchantId, OrderId, ClientId, ProductId, RecurringPrice, Quantity,
-                                      CurrentRecurring, TotalRecurringCycles, LastCharge, NextCharge, Status, Attempts, IsRetryable, IsValid,
-                                      CreatedAt, DaysCycle, IsDateBased, MonthlyBillingDate))
-                        conn.commit()
-                        print("Recurring Order No-", Id, " stored successfully")
+                        cursor.execute(General_data, (orders_Id,orders_ClientId,orders_RecurringOrderId,orders_Comments,orders_GrandTotal,orders_OrderPaymentType,
+                        orders_OrderChargeStatusType,orders_OrderStatusType,orders_PendingReasonType,orders_IsArchived,orders_OrderDate,orders_ModifiedAt,orders_OrderBundles,
+                        orders_Discounts,orders_ShippingTrackingMethods,orders_ShippingTaxes,orders_OrderedAt,orders_BillingCyclesCharged,orders_CustomFields,
+                        items_Id,items_OrderId,items_ProductId,items_Quantity,items_ProductName,
+                        items_ProductType,items_UnitPrice,items_IsRecurring,items_IsTaxable,items_IsCommissionable,items_CreatedAt,
+                        items_ModifiedAt,items_SelectedOptions,items_ProductTaxes,items_Discounts,items_LineItemAttributeValues,clients_Id,clients_Email,clients_FirstName,clients_LastName,
+                        clients_Address1,clients_Address2,clients_City,clients_Zip,clients_StateName,clients_CountryName,clients_Phone,clients_CreatedAt,clients_IsValid,
+                        products_Id,products_ProductName,products_ProductPrice,products_ShortDescription,products_ProductBasedShippingCost,
+                        products_HasShippingCalculation,products_ProductWeight,products_IsCommissionable,products_IsTaxable,products_IsFeaturedProduct,products_ProductType,
+                        products_IsAmemberProduct,products_CommissionTier1,products_CommissionTier2,products_IsDiscountEnabled,products_IsValid,products_UseSalePrice,products_SalePrice,products_IsActive,
+                        recurring_Id, recurring_MerchantId, recurring_OrderId, recurring_ClientId, recurring_ProductId, recurring_RecurringPrice, recurring_Quantity,
+                        recurring_CurrentRecurring, recurring_TotalRecurringCycles, recurring_LastCharge, recurring_NextCharge, recurring_Status, recurring_Attempts, recurring_IsRetryable, recurring_IsValid,
+                        recurring_CreatedAt, recurring_DaysCycle, recurring_IsDateBased, recurring_MonthlyBillingDate))
 
+                        conn.commit()
+                        print("Orders No-", orders_Id, " stored successfully")
+                        print("Item No-", items_Id, " stored successfully")
+                        print("Client No-", clients_Id, " stored successfully")
+                        print("Product No-", products_Id, " stored successfully")
+                        print("Recurring Order No-", recurring_Id, " stored successfully")
             conn.commit()
     except Exception as ex:
         print(ex)
