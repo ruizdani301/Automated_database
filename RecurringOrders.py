@@ -58,9 +58,9 @@ for x in iter:
             ri = requests.get(urlRI, params=parametro3)
             # print(ri)
             ri_content = ri.content
-            var3 = str(ri_content)
-            sl = slice(40, (len(var3)-1))
-            var4 = var3[sl]
+            ri3 = str(ri_content)
+            sl = slice(40, (len(ri3)-1))
+            ri4 = ri3[sl]
             try:
                 conn = mysql.connector.connect(
                     user='adminDB',
@@ -72,11 +72,11 @@ for x in iter:
                 if conn.is_connected():
                     cursor = conn.cursor()
                     # reading xml file , file name is file.xml
-                    tree = ET.ElementTree(ET.fromstring(var4))
+                    tree = ET.ElementTree(ET.fromstring(ri4))
                     # in our xml file Orders is the root for all
                     # Order data.
-                    data2 = tree.findall('RecurringOrderInfo')
-                    for i in data2:
+                    recurring = tree.findall('RecurringOrderInfo')
+                    for i in recurring:
                         Id = i.find('Id').text
                         MerchantId = i.find('MerchantId').text
                         OrderId = i.find('OrderId').text
@@ -99,13 +99,13 @@ for x in iter:
                         MonthlyBillingDate = i.find('MonthlyBillingDate').text
 
                         # sql query to insert data into database
-                data = """INSERT INTO RecurringOrders(Id,MerchantId,OrderId,ClientId,ProductId,RecurringPrice,Quantity,
+                recurring_data = """INSERT INTO RecurringOrders(Id,MerchantId,OrderId,ClientId,ProductId,RecurringPrice,Quantity,
                 CurrentRecurring,TotalRecurringCycles,LastCharge,NextCharge,Status,Attempts,IsRetryable,IsValid,
                 CreatedAt,DaysCycle,IsDateBased,MonthlyBillingDate) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,
                 %s,%s,%s,%s,%s,%s,%s)"""
 
                 # executing cursor object
-                cursor.execute(data, (Id, MerchantId, OrderId, ClientId, ProductId, RecurringPrice, Quantity,
+                cursor.execute(recurring_data, (Id, MerchantId, OrderId, ClientId, ProductId, RecurringPrice, Quantity,
                                       CurrentRecurring, TotalRecurringCycles, LastCharge, NextCharge, Status, Attempts, IsRetryable, IsValid,
                                       CreatedAt, DaysCycle, IsDateBased, MonthlyBillingDate))
                 conn.commit()

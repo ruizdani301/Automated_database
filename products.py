@@ -46,9 +46,9 @@ for x in iter:
 
         products = requests.get(P_id, params=parametro2)
         products2 = products.content
-        var3 = str(products2)
-        sl = slice(40, (len(var3)-1))
-        var4 = var3[sl]
+        products3 = str(products2)
+        sl = slice(40, (len(products3)-1))
+        products4 = products3[sl]
 
         try:
             conn = mysql.connector.connect(
@@ -62,11 +62,11 @@ for x in iter:
 
                 cursor = conn.cursor()
 
-                tree = ET.ElementTree(ET.fromstring(var4))
+                tree = ET.ElementTree(ET.fromstring(products4))
 
-                data2 = tree.findall('ProductInfo')
+                products5 = tree.findall('ProductInfo')
 
-                for i in data2:
+                for i in products5:
                     Id = i.find('Id').text
                     ProductName = i.find('ProductName').text
                     ProductPrice = i.find('ProductPrice').text
@@ -88,12 +88,12 @@ for x in iter:
                     IsActive = i.find('IsActive').text
 
 
-                    data = """INSERT INTO ProductInfo(Id,ProductName,ProductPrice,ShortDescription,ProductBasedShippingCost,
+                    products_data = """INSERT INTO ProductInfo(Id,ProductName,ProductPrice,ShortDescription,ProductBasedShippingCost,
                     HasShippingCalculation,ProductWeight,IsCommissionable,IsTaxable,IsFeaturedProduct,ProductType,
                     IsAmemberProduct,CommissionTier1,CommissionTier2,IsDiscountEnabled,IsValid,UseSalePrice,SalePrice,IsActive)
                     VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
 
-                    cursor.execute(data, (Id,ProductName,ProductPrice,ShortDescription,ProductBasedShippingCost,
+                    cursor.execute(products_data, (Id,ProductName,ProductPrice,ShortDescription,ProductBasedShippingCost,
                     HasShippingCalculation,ProductWeight,IsCommissionable,IsTaxable,IsFeaturedProduct,ProductType,
                     IsAmemberProduct,CommissionTier1,CommissionTier2,IsDiscountEnabled,IsValid,UseSalePrice,SalePrice,IsActive))
 

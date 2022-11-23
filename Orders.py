@@ -16,7 +16,7 @@ URL_ORDER_LIST = os.getenv('URL_ORDER_LIST')
 parametro = {
     'key': API_KEY,
     'LimitStartDate': '2022-10-01T00:00:00',
-    'LimitEndDate': '2022-10-31T00:00:00'
+    'LimitEndDate': '2022-10-02T00:00:00'
 }
 resp = requests.get(URL_ORDER_LIST,
                     params=parametro)
@@ -59,12 +59,14 @@ for x in iter:
             # reading xml file , file name is file.xml
             tree = ET.ElementTree(ET.fromstring(var4))
             # in our xml file Orders is the root for all
-            # Order data.
-            data2 = tree.findall('OrderInfo')
+        
+        # Order data
+
+            orders = tree.findall('OrderInfo')
             # retrieving the data and insert into table
             # i value for xml data #j value printing number of
             # values that are stored
-            for i in data2:
+            for i in orders:
                 Id = i.find('Id').text
                 ClientId = i.find('ClientId').text
                 RecurringOrderId = i.find('RecurringOrderId').text
@@ -85,14 +87,14 @@ for x in iter:
                 BillingCyclesCharged = i.find('BillingCyclesCharged').text
                 CustomFields = i.find('CustomFields').text
 
-            #     # sql query to insert data into database
-                data = """INSERT INTO Orders_1(Id,ClientId,RecurringOrderId,Comments,GrandTotal,OrderPaymentType,
+                # sql query to insert data into database
+                orders_data = """INSERT INTO Orders_1(Id,ClientId,RecurringOrderId,Comments,GrandTotal,OrderPaymentType,
                 OrderChargeStatusType,OrderStatusType,PendingReasonType,IsArchived,OrderDate,ModifiedAt,OrderBundles,
                 Discounts,ShippingTrackingMethods,ShippingTaxes,OrderedAt,BillingCyclesCharged,CustomFields)
                 VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
 
                 # executing cursor object
-                cursor.execute(data, (Id,ClientId,RecurringOrderId,Comments,GrandTotal,OrderPaymentType,
+                cursor.execute(orders_data, (Id,ClientId,RecurringOrderId,Comments,GrandTotal,OrderPaymentType,
                 OrderChargeStatusType,OrderStatusType,PendingReasonType,IsArchived,OrderDate,ModifiedAt,OrderBundles,
                 Discounts,ShippingTrackingMethods,ShippingTaxes,OrderedAt,BillingCyclesCharged,CustomFields))
                 conn.commit()

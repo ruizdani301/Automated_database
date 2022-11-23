@@ -37,9 +37,9 @@ for x in iter:
         C_id = dictionary2['Response']['OrderInfo']['ClientId']['@href']
         clients = requests.get(C_id, params=parametro2)
         clients2 = clients.content
-        var3 = str(clients2)
-        sl = slice(40, (len(var3)-1))
-        var4 = var3[sl]
+        clients3 = str(clients2)
+        sl = slice(40, (len(clients3)-1))
+        clients4 = clients3[sl]
 
         try:
             conn = mysql.connector.connect(
@@ -53,7 +53,7 @@ for x in iter:
 
                 cursor = conn.cursor()
 
-                tree = ET.ElementTree(ET.fromstring(var4))
+                tree = ET.ElementTree(ET.fromstring(clients4))
 
                 data2 = tree.findall('ClientInfo')
 
