@@ -193,7 +193,7 @@ for x in iter:
                     print('No es recurrente')
                 else:
                     parametro3 = {'key': API_KEY}
-                    urlRI = URL_RECURRING + ri_id2
+                    urlRI = '{}{}'.format(URL_RECURRING, ri_id2)
 
                     ri = requests.get(urlRI, params=parametro3)
                     # print(ri)
@@ -262,10 +262,12 @@ for x in iter:
 
                         conn.commit()
                         print("Orders No-", orders_Id, " stored successfully")
+                    """
                         print("Item No-", items_Id, " stored successfully")
                         print("Client No-", clients_Id, " stored successfully")
                         print("Product No-", products_Id, " stored successfully")
                         print("Recurring Order No-", recurring_Id, " stored successfully")
+                    """
             conn.commit()
     except Exception as ex:
         print(ex)
