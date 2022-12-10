@@ -51,11 +51,11 @@ for x in iter:
 
     try:
         conn = mysql.connector.connect(
-            user='adminDB',
-            port='3306',
-            password='admin.1',
-            host='143.244.148.34',
-            database='TESTINSSPIRA'
+            user=os.getenv('US'),
+            port=os.getenv('PORT'),
+            password=os.getenv('PASSWORD'),
+            host=os.getenv('HOST'),
+            database=os.getenv('DATABASE')
         )
         if conn.is_connected():
 
