@@ -7,8 +7,9 @@ An API is consulted and the data is transformed to automate the update of a data
 
 contains the general program, in this file the search process is unified and the insertion of information to the database.
 
-Example:
-for y in dictionary2:
+
+    Example:
+    for y in dictionary2:
                 ri_id = dictionary2['Response']['OrderInfo']['RecurringOrderId']
                 ri_id2 = str(ri_id)
                 if ri_id2 == 'None':
@@ -50,7 +51,7 @@ for y in dictionary2:
                         recurring_IsDateBased = i.find('IsDateBased').text
                         recurring_MonthlyBillingDate = i.find('MonthlyBillingDate').text
 
-#tools:
+# tools:
 mysql 3.8.1 located in Digital Ocean server
 python 3.8
 
