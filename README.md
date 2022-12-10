@@ -3,6 +3,10 @@ An API is consulted and the data is transformed to automate the update of a data
 
 - the program makes the request to the API and extracts the necessary information, as well as from each URL found in the request, inserting this information into a single table of the database, which was created on an external server.
 
+# General.py
+
+contains the general program, in this file the search process is unified and the insertion of information to the database.
+
 Example:
 for y in dictionary2:
                 ri_id = dictionary2['Response']['OrderInfo']['RecurringOrderId']
