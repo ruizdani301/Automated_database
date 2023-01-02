@@ -27,27 +27,17 @@ parametro = {
 resp = requests.get(URL_ORDER_LIST,
                     params=parametro)
 obj = resp.content
-
-# Convierte el xml a un diccionario
 dictionary = xmltodict.parse(obj)
-# # print(dictionary)
-
-# Entramos al arreglo de ordenes
 iter = dictionary['Response']['Orders']['Order']
-# print(iter)
-
-# Vamos a entrar al diccionario para hacer un reqest por cada link en el for
-parametro2 = {'key': API_KEY}
-for x in iter:
-    #     # Agregar metodos de error o try catch
+parameter_key = {'key': API_KEY}
+for value in iter:
+    # Agregar metodos de error o try catch
     # Realizo un Request por cada linea de iter donde la URL esta en la clave: @xlink:href
-    ord = requests.get(x['@xlink:href'], params=parametro2)
-    # Leo el contenido del request y lo almaceno en una variable
-    var2 = ord.content
-    # Convierto la variable en un str
-    var3 = str(var2)
-    sl = slice(40, (len(var3)-1))
-    var4 = var3[sl]
+    request_content = requests.get(value['@xlink:href'], params=parameter_key)
+    content = request_content.content
+    content = str(content)
+    new_key = slice(40, (len(content)-1))
+    var_content = content[new_key]
 
     try:
         conn = mysql.connector.connect(
@@ -60,173 +50,168 @@ for x in iter:
         if conn.is_connected():
 
             cursor = conn.cursor()
-            # Ingresar codigo a mysql aquí
-
             # reading xml file , file name is file.xml
-            tree = ET.ElementTree(ET.fromstring(var4))
+            tree = ET.ElementTree(ET.fromstring(var_content))
             # in our xml file Orders is the root for all
         
-        # Order data
+            """ Order data """
 
             orders = tree.findall('OrderInfo')
             # retrieving the data and insert into table
-            # i value for xml data #j value printing number of
-            # values that are stored
-            for i in orders:
-                orders_Id = i.find('Id').text
-                orders_ClientId = i.find('ClientId').text
-                orders_RecurringOrderId = i.find('RecurringOrderId').text
-                orders_Comments = i.find('Comments').text
-                orders_GrandTotal = i.find('GrandTotal').text
-                orders_OrderPaymentType = i.find('OrderPaymentType').text
-                orders_OrderChargeStatusType = i.find('OrderChargeStatusType').text
-                orders_OrderStatusType = i.find('OrderChargeStatusType').text
-                orders_PendingReasonType = i.find('PendingReasonType').text
-                orders_IsArchived = i.find('IsArchived').text
-                orders_OrderDate = i.find('OrderDate').text
-                orders_ModifiedAt = i.find('ModifiedAt').text
-                orders_OrderBundles = i.find('OrderBundles').text
-                orders_Discounts = i.find('Discounts').text
-                orders_ShippingTrackingMethods = i.find('ShippingTrackingMethods').text
-                orders_ShippingTaxes = i.find('ShippingTaxes').text
-                orders_OrderedAt = i.find('OrderedAt').text
-                orders_BillingCyclesCharged = i.find('BillingCyclesCharged').text
-                orders_CustomFields = i.find('CustomFields').text
+            # order value for xml data 
+            for order in orders:
+                orders_Id = order.find('Id').text
+                orders_ClientId = order.find('ClientId').text
+                orders_RecurringOrderId = order.find('RecurringOrderId').text
+                orders_Comments = order.find('Comments').text
+                orders_GrandTotal = order.find('GrandTotal').text
+                orders_OrderPaymentType = order.find('OrderPaymentType').text
+                orders_OrderChargeStatusType = order.find('OrderChargeStatusType').text
+                orders_OrderStatusType = order.find('OrderChargeStatusType').text
+                orders_PendingReasonType = order.find('PendingReasonType').text
+                orders_IsArchived = order.find('IsArchived').text
+                orders_OrderDate = order.find('OrderDate').text
+                orders_ModifiedAt = order.find('ModifiedAt').text
+                orders_OrderBundles = order.find('OrderBundles').text
+                orders_Discounts = order.find('Discounts').text
+                orders_ShippingTrackingMethods = order.find('ShippingTrackingMethods').text
+                orders_ShippingTaxes = order.find('ShippingTaxes').text
+                orders_OrderedAt = order.find('OrderedAt').text
+                orders_BillingCyclesCharged = order.find('BillingCyclesCharged').text
+                orders_CustomFields = order.find('CustomFields').text
 
-        #Items
+            """ Items data """
 
             items = tree.findall('.//OrderInfo/LineItems/LineItemInfo')
             # retrieving the data and insert into table
-            # i value for xml data #j value printing number of
-            # values that are stored
-            for i in items:
-                items_Id = i.find('Id').text
-                items_OrderId = i.find('OrderId').text
-                items_ProductId = i.find('ProductId').text
-                items_Quantity = i.find('Quantity').text
-                items_ProductName = i.find('ProductName').text
-                items_ProductType = i.find('ProductType').text
-                items_UnitPrice = i.find('UnitPrice').text
-                items_IsRecurring = i.find('IsRecurring').text
-                items_IsTaxable = i.find('IsTaxable').text
-                items_IsCommissionable = i.find('IsCommissionable').text
-                items_CreatedAt = i.find('CreatedAt').text
-                items_ModifiedAt = i.find('ModifiedAt').text
-                items_SelectedOptions = i.find('SelectedOptions').text
-                items_ProductTaxes = i.find('ProductTaxes').text
-                items_Discounts = i.find('Discounts').text
-                items_LineItemAttributeValues = i.find('LineItemAttributeValues').text
+            # item value for xml data
+            for item in items:
+                items_Id = item.find('Id').text
+                items_OrderId = item.find('OrderId').text
+                items_ProductId = item.find('ProductId').text
+                items_Quantity = item.find('Quantity').text
+                items_ProductName = item.find('ProductName').text
+                items_ProductType = item.find('ProductType').text
+                items_UnitPrice = item.find('UnitPrice').text
+                items_IsRecurring = item.find('IsRecurring').text
+                items_IsTaxable = item.find('IsTaxable').text
+                items_IsCommissionable = item.find('IsCommissionable').text
+                items_CreatedAt = item.find('CreatedAt').text
+                items_ModifiedAt = item.find('ModifiedAt').text
+                items_SelectedOptions = item.find('SelectedOptions').text
+                items_ProductTaxes = item.find('ProductTaxes').text
+                items_Discounts = item.find('Discounts').text
+                items_LineItemAttributeValues = item.find('LineItemAttributeValues').text
 
-        # Clients
+            """ Clients data """
 
-            dictionary2 = xmltodict.parse(var2)
+            dictionary2 = xmltodict.parse(content)
 
-            for y in dictionary2:
-                C_id = dictionary2['Response']['OrderInfo']['ClientId']['@href']
-                clients = requests.get(C_id, params=parametro2)
+            for value in dictionary2:
+                client_id = dictionary2['Response']['OrderInfo']['ClientId']['@href']
+                clients = requests.get(client_id, params=parameter_key)
                 clients2 = clients.content
                 clients3 = str(clients2)
-                sl = slice(40, (len(clients3)-1))
-                clients4 = clients3[sl]
+                new_key = slice(40, (len(clients3)-1))
+                clients4 = clients3[new_key]
 
                 tree = ET.ElementTree(ET.fromstring(clients4))
 
-                clients5 = tree.findall('ClientInfo')
+                data_client = tree.findall('ClientInfo')
 
-                for i in clients5:
-                    clients_Id = i.find('Id').text
-                    clients_Email = i.find('Email').text
-                    clients_FirstName = i.find('FirstName').text
-                    clients_LastName = i.find('LastName').text
-                    clients_Address1 = i.find('Address1').text
-                    clients_Address2 = i.find('Address2').text
-                    clients_City = i.find('City').text
-                    clients_Zip = i.find('Zip').text
-                    clients_StateName = i.find('StateName').text
-                    clients_CountryName = i.find('CountryName').text
-                    clients_Phone = i.find('Phone').text
-                    clients_CreatedAt = i.find('CreatedAt').text
-                    clients_IsValid = i.find('IsValid').text
+                for client in data_client:
+                    clients_Id = client.find('Id').text
+                    clients_Email = client.find('Email').text
+                    clients_FirstName = client.find('FirstName').text
+                    clients_LastName = client.find('LastName').text
+                    clients_Address1 = client.find('Address1').text
+                    clients_Address2 = client.find('Address2').text
+                    clients_City = client.find('City').text
+                    clients_Zip = client.find('Zip').text
+                    clients_StateName = client.find('StateName').text
+                    clients_CountryName = client.find('CountryName').text
+                    clients_Phone = client.find('Phone').text
+                    clients_CreatedAt = client.find('CreatedAt').text
+                    clients_IsValid = client.find('IsValid').text
 
-        # Products
+            """ Products data """
 
-            for y in dictionary2:
-                P_id = dictionary2['Response']['OrderInfo']['LineItems']['LineItemInfo']['ProductId']['@href']
+            for value in dictionary2:
+                product_id = dictionary2['Response']['OrderInfo']['LineItems']['LineItemInfo']['ProductId']['@href']
 
-                products = requests.get(P_id, params=parametro2)
+                products = requests.get(product_id, params=parameter_key)
                 products2 = products.content
                 products3 = str(products2)
-                sl = slice(40, (len(products3)-1))
-                products4 = products3[sl]
+                new_key = slice(40, (len(products3)-1))
+                products4 = products3[new_key]
 
                 tree = ET.ElementTree(ET.fromstring(products4))
 
                 products5 = tree.findall('ProductInfo')
 
-                for i in products5:
-                    products_Id = i.find('Id').text
-                    products_ProductName = i.find('ProductName').text
-                    products_ProductPrice = i.find('ProductPrice').text
-                    products_ShortDescription = i.find('ShortDescription').text
-                    products_ProductBasedShippingCost = i.find('ProductBasedShippingCost').text
-                    products_HasShippingCalculation = i.find('HasShippingCalculation').text
-                    products_ProductWeight = i.find('ProductWeight').text
-                    products_IsCommissionable = i.find('IsCommissionable').text
-                    products_IsTaxable = i.find('IsTaxable').text
-                    products_IsFeaturedProduct = i.find('IsFeaturedProduct').text
-                    products_ProductType = i.find('ProductType').text
-                    products_IsAmemberProduct = i.find('IsAmemberProduct').text
-                    products_CommissionTier1 = i.find('CommissionTier1').text
-                    products_CommissionTier2 = i.find('CommissionTier2').text
-                    products_IsDiscountEnabled = i.find('IsDiscountEnabled').text
-                    products_IsValid = i.find('IsValid').text
-                    products_UseSalePrice = i.find('UseSalePrice').text
-                    products_SalePrice = i.find('SalePrice').text
-                    products_IsActive = i.find('IsActive').text
+                for product in products5:
+                    products_Id = product.find('Id').text
+                    products_ProductName = product.find('ProductName').text
+                    products_ProductPrice = product.find('ProductPrice').text
+                    products_ShortDescription = product.find('ShortDescription').text
+                    products_ProductBasedShippingCost = product.find('ProductBasedShippingCost').text
+                    products_HasShippingCalculation = product.find('HasShippingCalculation').text
+                    products_ProductWeight = product.find('ProductWeight').text
+                    products_IsCommissionable = product.find('IsCommissionable').text
+                    products_IsTaxable = product.find('IsTaxable').text
+                    products_IsFeaturedProduct = product.find('IsFeaturedProduct').text
+                    products_ProductType = product.find('ProductType').text
+                    products_IsAmemberProduct = product.find('IsAmemberProduct').text
+                    products_CommissionTier1 = product.find('CommissionTier1').text
+                    products_CommissionTier2 = product.find('CommissionTier2').text
+                    products_IsDiscountEnabled = product.find('IsDiscountEnabled').text
+                    products_IsValid = product.find('IsValid').text
+                    products_UseSalePrice = product.find('UseSalePrice').text
+                    products_SalePrice = product.find('SalePrice').text
+                    products_IsActive = product.find('IsActive').text
 
-        # Recurring Orders
-            for y in dictionary2:
-                ri_id = dictionary2['Response']['OrderInfo']['RecurringOrderId']
-                # print(type(ri_id))
-                ri_id2 = str(ri_id)
-                if ri_id2 == 'None':
+            """ Recurring Orders data """
+
+            for value in dictionary2:
+                recurring_id = dictionary2['Response']['OrderInfo']['RecurringOrderId']
+                recurring_id = str(recurring_id)
+                if recurring_id == 'None':
                     print('No es recurrente')
                 else:
-                    parametro3 = {'key': API_KEY}
-                    urlRI = '{}{}'.format(URL_RECURRING, ri_id2)
+                    parameter_key = {'key': API_KEY}
+                    urlRI = '{}{}'.format(URL_RECURRING, recurring_id)
 
-                    ri = requests.get(urlRI, params=parametro3)
-                    # print(ri)
-                    ri_content = ri.content
-                    ri3 = str(ri_content)
-                    sl = slice(40, (len(ri3)-1))
-                    ri4 = ri3[sl]
+                    recurring = requests.get(urlRI, params=parameter_key)
+                    recurring_content = recurring.content
+                    r_content = str(recurring_content)
+                    new_key = slice(40, (len(r_content)-1))
+                    data_recurring = r_content[new_key]
 
-                    tree = ET.ElementTree(ET.fromstring(ri4))
+                    tree = ET.ElementTree(ET.fromstring(data_recurring))
                     # in our xml file Orders is the root for all
                     # Order data.
                     recurring = tree.findall('RecurringOrderInfo')
-                    for i in recurring:
-                        recurring_Id = i.find('Id').text
-                        recurring_MerchantId = i.find('MerchantId').text
-                        recurring_OrderId = i.find('OrderId').text
-                        recurring_ClientId = i.find('ClientId').text
-                        recurring_ProductId = i.find('ProductId').text
-                        recurring_RecurringPrice = i.find('RecurringPrice').text
-                        recurring_Quantity = i.find('Quantity').text
-                        recurring_CurrentRecurring = i.find('CurrentRecurring').text
-                        recurring_TotalRecurringCycles = i.find(
+                    for recurrence in recurring:
+                        recurring_Id = recurrence.find('Id').text
+                        recurring_MerchantId = recurrence.find('MerchantId').text
+                        recurring_OrderId = recurrence.find('OrderId').text
+                        recurring_ClientId = recurrence.find('ClientId').text
+                        recurring_ProductId = recurrence.find('ProductId').text
+                        recurring_RecurringPrice = recurrence.find('RecurringPrice').text
+                        recurring_Quantity = recurrence.find('Quantity').text
+                        recurring_CurrentRecurring = recurrence.find('CurrentRecurring').text
+                        recurring_TotalRecurringCycles = recurrence.find(
                             'TotalRecurringCycles').text
-                        recurring_LastCharge = i.find('LastCharge').text
-                        recurring_NextCharge = i.find('NextCharge').text
-                        recurring_Status = i.find('Status').text
-                        recurring_Attempts = i.find('Attempts').text
-                        recurring_IsRetryable = i.find('IsRetryable').text
-                        recurring_IsValid = i.find('IsValid').text
-                        recurring_CreatedAt = i.find('CreatedAt').text
-                        recurring_DaysCycle = i.find('DaysCycle').text
-                        recurring_IsDateBased = i.find('IsDateBased').text
-                        recurring_MonthlyBillingDate = i.find('MonthlyBillingDate').text
+                        recurring_LastCharge = recurrence.find('LastCharge').text
+                        recurring_NextCharge = recurrence.find('NextCharge').text
+                        recurring_Status = recurrence.find('Status').text
+                        recurring_Attempts = recurrence.find('Attempts').text
+                        recurring_IsRetryable = recurrence.find('IsRetryable').text
+                        recurring_IsValid = recurrence.find('IsValid').text
+                        recurring_CreatedAt = recurrence.find('CreatedAt').text
+                        recurring_DaysCycle = recurrence.find('DaysCycle').text
+                        recurring_IsDateBased = recurrence.find('IsDateBased').text
+                        recurring_MonthlyBillingDate = recurrence.find('MonthlyBillingDate').text
 
                         General_data = """INSERT INTO GeneralTable(orders_Id,orders_ClientId,orders_RecurringOrderId,orders_Comments,orders_GrandTotal,orders_OrderPaymentType,
                         orders_OrderChargeStatusType,orders_OrderStatusType,orders_PendingReasonType,orders_IsArchived,orders_OrderDate,orders_ModifiedAt,orders_OrderBundles,
